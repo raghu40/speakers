@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Route, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, Subscription, map, tap } from 'rxjs';
 import {
   currentPageDetails,
   isLoading,
@@ -20,7 +20,7 @@ import {
   templateUrl: './speaker-list.component.html',
   styleUrls: ['./speaker-list.component.scss'],
 })
-export class SpeakerListComponent implements OnInit {
+export class SpeakerListComponent implements OnInit, OnDestroy {
   speakers$!: Observable<Speaker[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<any>;
@@ -28,22 +28,28 @@ export class SpeakerListComponent implements OnInit {
   resultsPerPage: number = 20;
   totalSpeakers: number = 0;
   searchText: string = '';
+  speakerSubscription!: Subscription;
+  currentPageSubscription!: Subscription;
   constructor(private store: Store, private router: Router) {}
 
   ngOnInit(): void {
     this.speakers$ = this.store.pipe(
       select(displayAllSpeakers),
-      map((speakers) => speakers.slice(
-        this.resultsPerPage * (this.currentPage - 1),
-        this.resultsPerPage * this.currentPage
-      ))
+      map((speakers) =>
+        speakers.slice(
+          this.resultsPerPage * (this.currentPage - 1),
+          this.resultsPerPage * this.currentPage
+        )
+      )
     );
     this.loading$ = this.store.pipe(select(speakersDataLoading));
     this.error$ = this.store.pipe(select(selectError));
-    this.store.pipe(select(currentPageNumber)).subscribe((data) => {
-      this.currentPage = data;
-    });
-    this.speakers$.subscribe((speakers) => {
+    this.currentPageSubscription = this.store
+      .pipe(select(currentPageNumber))
+      .subscribe((data) => {
+        this.currentPage = data;
+      });
+    this.speakerSubscription = this.speakers$.subscribe((speakers) => {
       if (!speakers || !speakers.length) {
         this.loadSpeakers();
       }
@@ -96,5 +102,15 @@ export class SpeakerListComponent implements OnInit {
   }
   navigateToSpeakerDetails(id: string) {
     this.router.navigate(['/speaker-details', id]);
+  }
+
+  ngOnDestroy(): void {
+    if (this.currentPageSubscription) {
+      this.currentPageSubscription.unsubscribe();
+    }
+
+    if (this.speakerSubscription) {
+      this.speakerSubscription.unsubscribe();
+    }
   }
 }
