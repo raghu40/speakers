@@ -13,6 +13,10 @@ export class SpeakerService {
 
   getSpeakers(page: number, resultsPerPage: number): Observable<Speaker[]> {
     const url = `${this.apiUrl}?results=${resultsPerPage}&page=${page}`;
-    return this.http.get<Speaker[]>(url).pipe(map((response: any) => response.results));
+    return this.http.get<responseData>(url).pipe(map((response: responseData) => response.results ?? []));
   }
+}
+
+export interface responseData {
+  results?: Speaker[]
 }

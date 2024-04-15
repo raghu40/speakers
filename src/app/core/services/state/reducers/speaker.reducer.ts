@@ -6,7 +6,7 @@ import { state } from '@angular/animations';
 export interface SpeakerState {
   speakers: Speaker[];
   loading: boolean;
-  error: any;
+  error: null | object;
   currentPage: number;
 }
 
