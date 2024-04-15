@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h2 class="text-center mb-4">Speaker Details</h2>
+            <div *ngIf="selectedSpeaker$ | async as speaker; else loading" class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img [src]="speaker.picture.large" alt="Speaker Image"
+                            class="img-responsive img-circle image-display">
+                    </div>
+                    <div class="text-center">
+                        <h3>{{ speaker.name.first }} {{ speaker.name.last }}</h3>
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-3">
+                                <p><strong>Email:</strong> {{ speaker.email }}</p>
+                                <p><strong>Phone:</strong> {{ speaker.phone }}</p>
+                                <p><strong>Location:</strong> {{ speaker.location.city }}, {{ speaker.location.country
+                                    }}</p>
+                                <p><strong>Gender:</strong> {{ speaker.gender }}</p>
+                                <p><strong>Date of Birth:</strong> {{ speaker.dob.date | date: 'mediumDate' }}</p>
+                                <p><strong>Age:</strong> {{ speaker.dob.age }}</p>
+                                <p><strong>Registered Since:</strong> {{ speaker.registered.date | date: 'mediumDate' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button class="btn btn-primary btn-back" (click)="goBack()">Back to Speaker List</button>
+                </div>
+            </div>
+            <ng-template #loading>
+                <p class="text-center">Loading speaker details...</p>
+            </ng-template>
+        </div>
+    </div>
+</div>

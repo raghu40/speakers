@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="row" *ngIf="!(error$ | async) else displayError">
+        <div class="overlay" *ngIf="(loading$ | async)">
+            <div class="loader"></div>
+        </div>
+        <div class="col-md-6 col-md-offset-3" *ngIf="(speakers$ | async) as speakers; else loading;">
+            <h2>Speaker List</h2>
+            <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchText" />
+            <ul class="list-group">
+                <li *ngFor="let speaker of speakers | filter: searchText" class="list-group-item showHand"
+                    (click)="navigateToSpeakerDetails(speaker.login.uuid)">
+                    <div class="media">
+                        <div class="media-left">
+                            <img class="media-object" src="{{ speaker.picture.thumbnail }}" alt="Speaker Thumbnail">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">{{ speaker.name.first }} {{ speaker.name.last }}</h4>
+                            <p>Email: {{ speaker.email }}</p>
+                            <p>Phone: {{ speaker.phone }}</p>
+                            <p>Location: {{ speaker.location.city }}, {{ speaker.location.country }}</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <nav aria-label="Page navigation" class="pagination-position">
+                <ul class="pagination pagination-lg">
+                    <li [class.disabled]="currentPage <= 1">
+                        <a class="showHand" (click)="previousButton(currentPage - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li *ngFor="let page of getTotalPages()" [class.active]="page === currentPage">
+                        <a class="showHand" (click)="onPageChange(page)">{{ page }}</a>
+                    </li>
+                    <li [class.disabled]="currentPage === getTotalPages().length">
+                        <a class="showHand" (click)="nextButton(currentPage + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <ng-template #loading>
+            <p>Loading speaker details...</p>
+        </ng-template>
+
+    </div>
+    <ng-template #displayError>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3" *ngIf="error$ | async  as error ">
+                <div class="alert alert-danger text-center" role="alert">
+                    Error occurred while loading speakers. {{error.message}}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
