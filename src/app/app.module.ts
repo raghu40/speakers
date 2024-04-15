@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { speakerReducer } from './core/services/state/reducers/speaker.reducer';
 import { SpeakerEfforts } from './core/services/state/effects/speaker.effects';
 import { FormsModule } from '@angular/forms';
+import { SPEAKER } from './core/services/state/selectors/speaker.selector';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    StoreModule.forRoot({ speaker: speakerReducer }),
+    StoreModule.forRoot({ [SPEAKER]: speakerReducer }),
     EffectsModule.forRoot([SpeakerEfforts]),
   ],
   providers: [],

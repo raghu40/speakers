@@ -2,8 +2,10 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { SpeakerState } from '../reducers/speaker.reducer';
 import { Speaker } from '../models/speaker.model';
 
+export const SPEAKER = 'speaker'
+
 export const selectSpeakerState =
-  createFeatureSelector<SpeakerState>('speaker');
+  createFeatureSelector<SpeakerState>(SPEAKER);
 
 export const displayAllSpeakers = createSelector(
   selectSpeakerState,
